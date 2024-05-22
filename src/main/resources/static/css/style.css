@@ -1,0 +1,328 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff; 
+}
+
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+    padding: 10px;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif; 
+    font-size: 20px;
+    background-color: #e7e5e5; 
+    color: #ffffff; 
+}
+
+.header a {
+    color: #ffffff;
+    text-align: center;
+    padding: 16px 18px;
+    font-family: 'Roboto', sans-serif; 
+    font-size: 20px;
+}
+
+.footer-container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    font-family: 'Roboto', sans-serif; 
+    font-size: 20px;
+    text-align: center;
+    background-color: #e7e5e5; 
+    padding: 20px;
+    color: #ffffff; 
+}
+
+.brand, .sign-in, .user-profile, .search-for-restaurants {
+    font-size: 18px;
+    color: rgb(110, 109, 109);
+    cursor: pointer;
+    padding: 10px 20px; 
+    border-radius: 20px; 
+}
+
+.search-for-restaurants {
+    background: none;
+    border: none;
+}
+
+.sign-in {
+    background: none;
+    border: none;
+}
+
+.user-profile {
+    background: none;
+    border: none;
+}
+
+.welcome-container {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+p{
+    font-family: 'Roboto', sans-serif; 
+    font-size: 20px;
+}
+
+h1, h2, h3, label, button {
+    font-family: 'Roboto', sans-serif; 
+}
+
+h1 {
+    color: rgb(110, 109, 109);
+    font-family: 'Roboto', sans-serif; 
+}
+
+h2 {
+    color: rgb(110, 109, 109);
+    font-weight: bold;
+}
+
+h3 {
+    color: rgb(110, 109, 109);
+    font-weight: bold;
+    font-size: 24px;
+    text-decoration: underline;
+}
+
+label {
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif; 
+    color: rgb(0, 0, 0);
+    padding: 10px 20px; 
+    border-radius: 20px; 
+}
+
+input, select {
+    font-size: 16px;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid #e7e5e5; 
+    border-radius: 5px;
+    width: 100%; 
+}
+
+.create-account, .submit, .restaurant-user, .customer-user, .profile, .login {
+    padding: 10px 15px;
+    border: 2px solid darkgray; 
+    background-color: white;
+    color: rgb(110, 109, 109);
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    width: 200px;
+    margin: 20px auto;
+}
+
+.brand:hover {
+    background-color: rgb(110, 109, 109);
+    color: white;
+}
+
+.brand:hover, .sign-in:hover, .user-profile:hover, .search-for-restaurants:hover, 
+.create-account:hover, .submit:hover, .restaurant-user:hover, .customer-user:hover, 
+.profile:hover, .login:hover, .reserve-buttons:hover {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+.search-box {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+    margin-top: 20px;
+    width: 100%; 
+}
+
+input[type="text"], input[type="username"], input[type="email"], input[type="password"], input, select, input[type="number"], input[type="time"] {
+    box-sizing: border-box;
+    border: 3px solid #e7e5e5;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#passwordStrength p {
+    font-size: 14px; 
+}
+
+#passwordGuidelines p {
+    font-size: 14px; 
+}
+
+input[type="number"], input[type="time"] {
+    width: 120px; 
+    padding: 8px; 
+    margin: 5px 0; 
+    border: 2px solid #e7e5e5; 
+    border-radius: 5px;
+    font-size: 14px; 
+}
+
+.account-type{
+    width: 50px;  
+    box-sizing: border-box;
+    padding: 10px 15px;
+    margin: 5px 0;  
+}
+
+.sign-out {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: rgb(110, 109, 109);
+    cursor: pointer;
+}
+
+.sign-in:hover {
+    background-color: rgb(110, 109, 109);
+    color: white;
+}
+
+/* styles for selecting and rating in searchfood webpage */
+select {
+    font-size: 16px;
+    padding: 8px;
+    width: auto; 
+    color: #333; 
+    background-color: white; 
+}
+
+option {
+    font-family: 'Roboto', sans-serif; 
+    color: black; 
+}
+
+/* search results output*/
+.results-container {
+    margin-top: 20px;
+    width: 90%;
+    text-align: center;
+}
+
+.result-item {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+button.result-button {
+    margin-left: 10px;
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;  
+    border: 1px solid #ccc;     
+    transition: background-color 0.2s, color 0.2s; 
+}
+
+button.result-button:hover {
+    background-color: #ff0000;  
+    color: #ffffff;             
+}
+
+/* hover effect for all buttons*/
+.brand:hover, .sign-in:hover, .user-profile:hover, .search-for-restaurants:hover, 
+.create-account:hover, .submit:hover, .restaurant-user:hover, .customer-user:hover, 
+.profile:hover, .login:hover , .imageUpload:hover{
+    background-color: #ff0000; 
+    color: #ffffff;             
+    transition: background-color 0.2s, color 0.2s;
+    padding: 12px 22px;
+}
+
+/* more styling for buttons */
+.brand, .search-for-restaurants, .sign-in {
+    border-radius: 10px; 
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    transition: background-color 0.2s, color 0.2s, padding 0.2s; 
+}
+
+
+
+.listing {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.info-container, .text-container, .reservation-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.reservation-form {
+     margin-left: 20px;   /*Space between the info and the form */
+}
+
+.reserve-buttons {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: rgb(110, 109, 109);
+    cursor: pointer;
+    padding: 10px 20px; 
+    border-radius: 10px; 
+    transition: background-color 0.2s, color 0.2s; 
+}
+
+.reserve-buttons:hover {
+    background-color: #ff0000; 
+    color: #ffffff;
+}
+
+.account-creation {
+    width: 300px; 
+    text-align: center;
+}
+
+.input-container {
+    margin-bottom: 20px;
+    position: relative; 
+}
+
+.input-label {
+    position: absolute; 
+    top: 50%; 
+    left: 10px; 
+    transform: translateY(-50%); 
+    color: #777; 
+    transition: all 0.3s ease;
+    pointer-events: none; 
+}
+
+input:focus + .input-label,
+input:not(:placeholder-shown) + .input-label {
+    top: 5px; 
+    left: 5px; 
+    font-size: 12px; 
+    color: #333; 
+}

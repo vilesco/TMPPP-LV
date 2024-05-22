@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Food</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> <!-- for star ratings -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <span id="brand" class="brand">ReserveIt</span>
+        <div>
+            <button id="myProfile" class="user-profile">My Profile</button>
+            <button id="signInSignOut" class="sign-in">Sign Out</button>
+        </div>
+    </div>
+    <div class="centered-container">
+        <div class="welcome-container">
+            <h2>Let's Find Some Food</h2>
+            <div class="search-box" style="display: flex; align-items: center;">
+                <input type="text" id="restaurant" name="restaurant" placeholder="Restaurant name" style="flex-grow: 1; max-width: 250px; margin-right: 10px;">
+                <div style="display: flex; align-items: center;">
+                    <select id="cuisine" name="cuisine">
+                        <option value="">Select Cuisine</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Results will be displayed below -->
+            <div id="searchResults" class="results-container"></div>
+        </div>        
+    </div>
+     <script>
+        // listener for restaurant name search field
+        const restaurantSearch = document.getElementById("restaurant");
+        const cuisineSelector = document.getElementById("cuisine");
+        restaurantSearch.addEventListener("input", function() {
+            filterRestaurants();
+        });
+        cuisineSelector.addEventListener("change", function() {
+            filterRestaurants();
+        });
+
+        async function filterRestaurants() {
+            const restaurantInput = restaurantSearch.value;
+            const cuisineSelection = cuisineSelector.value;
+            if (restaurantInput != "" && cuisineSelection != "") {
+                filterRestaurantsByNameAndCuisine(restaurantInput, cuisineSelection);
+            } else if (restaurantInput != "" && cuisineSelection == "") {
+                filterRestaurantsByName(restaurantInput);
+            } else if (restaurantInput == "" && cuisineSelection != "") {
+                filterRestaurantsByCuisine(cuisineSelection);
+            } else {
+                displayAllRestaurants();
+            }
+        }
+
+        // method to display restaurants based on the cuisine selector
+        async function filterRestaurantsByCuisine(cuisineSelection) {
+            const response = await fetch(`http://localhost:8080/restaurant/filter/cuisine/${cuisineSelection}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';                    
+                const data = await response.json();
+                var counter = 0;
+                data.forEach(restaurant => {
+                    counter++;
+                    displayRestaurant(restaurant, resultsContainer, counter);
+                });
+            } else {
+                throw new Error('Failed to get restaurants');
+            }
+        } 
+
+        // method to display restaurants based on the name search field
+        async function filterRestaurantsByName(searchInput) {
+            const response = await fetch(`http://localhost:8080/restaurant/filter/name/${searchInput}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';                    
+                const data = await response.json();
+                var counter = 0;
+                data.forEach(restaurant => {
+                    counter++;
+                    displayRestaurant(restaurant, resultsContainer, counter);
+                });
+            } else {
+                throw new Error('Failed to get restaurants');
+            }
+        } 
+
+        // method to display restaurants based on the name search field and cuisine selector
+        async function filterRestaurantsByNameAndCuisine(searchInput, cuisineSelection) {
+            const response = await fetch(`http://localhost:8080/restaurant/filter/name-and-cuisine/${searchInput}/${cuisineSelection}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';                    
+                const data = await response.json();
+                var counter = 0;
+                data.forEach(restaurant => {
+                    counter++;
+                    displayRestaurant(restaurant, resultsContainer, counter);
+                });
+            } else {
+                throw new Error('Failed to get restaurants');
+            }
+        } 
+
+        // displays all restaurants and sets cuisine selector
+        // called on initial visit, and when the restaurant name input field is blank
+        async function displayAllRestaurants() {
+            const response = await fetch('http://localhost:8080/restaurant/get-all', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+            	const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';
+                let cuisineOptions = [];
+                
+                const data = await response.json();
+                console.log(data)
+                var counter = 0;
+                data.forEach(restaurant => {
+                    counter++;
+                	displayRestaurant(restaurant, resultsContainer, counter);
+                });
+            } else {
+                throw new Error('Failed to get restaurants');
+            }
+        }
+
+        // method for displaying an individual restaurant
+        async function displayRestaurant(restaurant, resultsContainer, counter) {
+            const name = restaurant.restaurantName;
+            var formattedName = name.replace(/(?<!\\)'/g, "\\'");
+            var countingString = counter.toString();
+            const address = restaurant.address;
+            const phoneNumber = restaurant.phoneNumber;
+            const cuisine = restaurant.cuisine;
+            const openingTime = restaurant.openingTime;
+            const closingTime = restaurant.closingTime;
+          
+            var ddate = new Date();
+            var todaysDate = ddate.toLocaleDateString('en-CA');
+            var maxDate = new Date(ddate.setMonth(ddate.getMonth()+3)).toLocaleDateString('en-CA');
+            
+            const listing = document.createElement('div');
+            listing.className = 'listing';
+            listing.style.display = 'flex';  // use flexbox to lay out elements side by side
+
+            const infoContainer = document.createElement('div');
+            infoContainer.className = 'info-container';
+            infoContainer.style.flex = '1';
+
+            const image = new Image();
+            image.src = 'data:image/jpeg;base64,' + restaurant.photo;
+            image.width = "400";
+            image.height = "300";
+            infoContainer.appendChild(image);
+
+            const textContainer = document.createElement('div');
+            textContainer.className = 'text-container';
+            textContainer.innerHTML = `
+                <h1 id="restaurantName">${name}</h1>
+                <p style="margin: 2px 0; font-size: 14px;">${cuisine} | ${openingTime} - ${closingTime}</p>
+                <p style="margin: 2px 0; font-size: 14px;">${address}</p>
+                <p style="margin: 2px 0; font-size: 14px;">${phoneNumber}</p>
+            `;
+            infoContainer.appendChild(textContainer);
+            
+            // if statement added to verify reserve functionality only appears after customer is logged in
+            const token = localStorage.getItem("jwt");
+            if (token != null) {
+                checkRoles(token)
+                    .then(data => {
+                        if (data.includes("CUSTOMER")) {
+                            const reservationForm = document.createElement('div');
+                            reservationForm.className = 'reservation-form';
+                            reservationForm.innerHTML = `
+                            <div>
+
+                                <form id="reservationForm" action="javascript:;" onsubmit="makeReservation(document.getElementById('reservationDate${countingString}').value, \
+                                 															                                 document.getElementById('party${countingString}').value, \
+                                                                                               document.getElementById('reservationTime${countingString}').value,'${formattedName}')">
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <label for="reservationDate" style="width: 60px; margin-right: 5px;">Date</label>
+                                    <input type="date" id="reservationDate${countingString}" name="reservationDate" min="${todaysDate}" max="${maxDate}" required>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <label for="reservationTime" style="width: 60px; margin-right: 5px;">Time</label>
+                                    <input type="time" id="reservationTime${countingString}" name="reservationTime" min=${openingTime} max=${closingTime} required>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <label for="party" style="width: 60px; margin-right: 5px;">Guests</label>
+                                    <input type="number" id="party${countingString}" name="party" min="1" max="10" required>
+                                </div>
+                                    <button type="submit" button id="reserve-button" class="reserve-buttons" style="margin-top: 10px;">Reserve</button>
+                                </form>
+                            </div>
+                            `;
+                        listing.appendChild(infoContainer); 
+                        listing.appendChild(reservationForm); 
+                    }else{
+                    	listing.appendChild(infoContainer); 
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        } else {
+            listing.appendChild(infoContainer);
+        }
+
+        // append the listing to the results container
+        resultsContainer.appendChild(listing);
+    }
+
+
+
+
+        async function addCuisineOptions() {
+            const response = await fetch('http://localhost:8080/restaurant/get-all', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+            	const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';
+                let cuisineOptions = [];
+                
+                const data = await response.json();
+                console.log(data)
+                data.forEach(restaurant => {
+                    
+                    // adds cuisine to search filters
+                    //TODO: add handling for uppercase/lowercase/irregular strings
+                    const cuisine = restaurant.cuisine;
+                    if (!cuisineOptions.includes(cuisine)) {
+                        document.getElementById("cuisine").insertAdjacentHTML("beforeend", `<option value="${cuisine}">${cuisine}</option>`);
+                        cuisineOptions.push(cuisine);
+                    }
+                });
+            } else {
+                throw new Error('Failed to get restaurants');
+            }
+        }
+
+        addCuisineOptions();
+        displayAllRestaurants();
+    </script>
+    <script src="/js/script.js"></script>
+</body>
+</html>

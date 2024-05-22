@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <span id="brand" class="brand">ReserveIt</span>
+        <button id ="myProfile" button class = "user-profile">My Profile</button>
+        <button id ="signInSignOut" button class="sign-in">Sign In</button>
+    </div>
+    <!-- This container includes both the welcome message and the Create Account button -->
+    <div class="centered-container"> <!-- Additional wrapper for better clarity on styling -->
+        <div class="welcome-container">
+            <h1 id="restaurantName">Restaurant's Profile</h1>
+            <p><a href="/restaurant/information"><u>Edit Account Details</u></a></p>
+            <table>
+				<tr><td>Upload a profile picture (1MB size limit):</td><td><input type="file" name="file" id="file" /></td></tr>
+				<tr><td></td><td><input type="submit" value="Upload" id="upload" class="imageUpload" onclick="uploadImage()"/></td></tr>
+			</table>
+            <h2 id="reservationHeader">Upcoming Reservations</h2>
+        </div>
+    </div>
+    <script src="/js/script.js"></script>
+    <script>
+    async function loadPictures(username){
+    	const response = await fetch(`http://localhost:8080/get-image/${username}`, {
+             method: 'GET',
+            
+         })
+    	const responseData = await response.text();    	
+    var image = new Image();
+    	image.src = 'data:image/jpeg;base64,' + responseData;
+    	document.body.appendChild(image);
+    }
+   
+    const username = localStorage.getItem('user');
+    getRestaurantInformation(username)
+        .then(responseData => {
+            document.getElementById('restaurantName').textContent = responseData.restaurantName+'\'s Restaurant Profile';
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
+    loadPictures(username);
+    
+    async function uploadImage() {
+    	const username = localStorage.getItem('user');
+        const input = document.getElementById('file').files[0];
+    	const response = await fetch(`http://localhost:8080/restaurant-image/upload/${username}`, {
+            method: 'POST',
+            headers: {
+                Authorization: "Bearer " +  JSON.parse(localStorage.getItem("jwt"))            
+            },
+    	body: input
+        });
+    	performRedirect("/restaurant/profile", localStorage.getItem("jwt"));
+    }
+    
+    async function displayReservations() {
+        const response = await fetch(`http://localhost:8080/restaurant-reservations/${username}`, {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " +  JSON.parse(localStorage.getItem("jwt")),
+                'Content-Type': 'application/json'
+                
+            }
+        });
+        if (response.ok) {
+        	const reservationHeader = document.getElementById('reservationHeader');
+            const data = await response.json();
+            console.log(data)
+            
+            data.forEach(reservation => {
+                const reservationID = reservation.reservationID;
+		const customerID = reservation.customerID;
+                getCustomerByID(customerID+"")
+                    .then(responseData => {
+                        const customerFirstName = responseData.firstName;
+                        const customerLastName = responseData.lastName;
+                        const phone = responseData.phoneNumber;
+                        const partySize = reservation.partySize;
+                        const date = reservation.reservationDate;
+                        const time = reservation.reservationTime;
+                        reservationHeader.insertAdjacentHTML('beforeend', `<p>Customer: ${customerFirstName} ${customerLastName}, 
+                        		Phone Number: ${phone}, Date: ${date}, Time: ${time}, Party: ${partySize}</p>
+                        <button  id="cancel-button" class="cancel-buttons" onclick="cancelReservation(${reservationID})">Cancel</button>`);
+                    })
+                
+            });
+        } else {
+            throw new Error('Failed to get reservations');
+        }
+    }
+    displayReservations();
+    </script>
+</body>
+</html>
